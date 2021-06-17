@@ -1,0 +1,57 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Necessary Libraries and Constants"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import matplotlib.pyplot as plt\n",
+    "import numpy as np\n",
+    "import hashlib\n",
+    "import random\n",
+    "import string\n",
+    "import hmac\n",
+    "\n",
+    "e = 2**52\n",
+    "salt = \"0000000000000000000fa3b65e43e4240d71762a5bf397d5304b2596d116859c\""
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Get Result and Get Previous Game Function"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "game_hash = '100af1b49f5e9f87efc81f838bf9b1f5e38293e5b4cf6d0b366c004e0a8d9987'\n",
+    "\n",
+    "def get_result(game_hash):\n",
+    "    hm = hmac.new(str.encode(game_hash), b'', hashlib.sha256)\n",
+    "    hm.update(salt.encode(\"utf-8\"))\n",
+    "    h = hm.hexdigest()\n",
+    "    if (int(h, 16) % 33 == 0):\n",
+    "        return 1\n",
+    "    h = int(h[:13], 16)\n",
+    "    e = 2**52\n",
+    "    return (((100 * e - h) / (e-h)) // 1) / 100.0\n",
+    "\n",
+    "def get_prev_game(hash_code):\n",
+    "    m = hashlib.sha256()\n",
+    "    m.update(hash_code.encode(\"utf-8\"))\n",
+    "    return m.hexdigest()"
+   ]
+  },
